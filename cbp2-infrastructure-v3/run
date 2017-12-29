@@ -1,0 +1,30 @@
+#!/bin/csh
+if ( $1 == "" ) then
+	printf "Usage: $0 <trace-file-directory>\n"
+	exit 1
+endif
+if ( ! { cd src; make -q } ) then
+	printf "predict program is not up to date.\n"
+endif
+if ( ! -e src/predict ) then
+	printf "predict program is not built.\n"
+	exit 1
+endif
+set trace_list = `find $1 -name '*.trace.*' | sort`
+set dsum = 0
+set isum = 0
+set n = 0
+foreach i ( $trace_list )
+	printf "%-40s\t" $i 
+	set dmpki = `./src/predict $i | tail -1 | sed -e '/^.*IPB; /s///' | sed -e '/direction.*$/s///'`
+	set impki = `./src/predict $i | tail -1 | sed -e '/^.*direction MPKI; /s///' | sed -e '/indirect.*$/s///'`
+	printf "%0.3f %0.3f\n" $dmpki $impki
+	set dsum = `printf "$dsum\n$dmpki\n+\np\n" | dc`
+	set isum = `printf "$isum\n$impki\n+\np\n" | dc`
+	@ n = $n + 1
+end
+printf "average direction MPKI: "
+printf "3\nk\n$dsum\n$n\n/p\n" | dc
+printf "average indirect MPKI: "
+printf "3\nk\n$isum\n$n\n/p\n" | dc
+exit 0
