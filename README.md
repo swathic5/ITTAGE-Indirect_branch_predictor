@@ -6,5 +6,5 @@ This infrastructure was updated to include a default indirect branch predictor. 
 
 To run the predictor
 1) Go to cbp2-infrastructure-v3/src and do make. 
-2) Download traces from into cbp2-infrastructure-v3
+2) Download traces from into cbp2-infrastructure-v3 from - https://drive.google.com/drive/folders/11WM2wi6ocVoBRsp84d77b7espIoI8NMz?usp=sharing
 3) Use the run script in cbp2-infrastructure-v3. Do - ./run.sh traces/
